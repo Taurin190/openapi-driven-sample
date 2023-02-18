@@ -1,14 +1,14 @@
 openapi: 3.1.0
 info:
   version: 1.0.0
-  title: Example.com
+  title: Taurin190.com
   termsOfService: 'https://example.com/terms/'
   contact:
     email: contact@example.com
     url: 'http://example.com/contact'
   license:
-    name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    name: MIT License
+    url: 'https://opensource.org/licenses/MIT'
   x-logo:
     url: 'https://redocly.github.io/openapi-template/logo.png'
   description:
@@ -28,14 +28,10 @@ servers:
         description: Your tenant id
   - url: 'https://example.com/api/v1'
 paths:
-  '/users/{username}':
+  '/api/users':
+    $ref: 'paths/users.yaml'
+  '/api/users/{username}':
     $ref: 'paths/users_{username}.yaml'
-  /echo:
-    $ref: paths/echo.yaml
-  /pathItem:
-    $ref: paths/path-item.yaml
-  /pathItemWithExamples:
-    $ref: paths/path-item-with-examples.yaml
 components:
   securitySchemes:
     main_auth:

@@ -1,14 +1,14 @@
 openapi: 3.1.0
 info:
   version: 1.0.0
-  title: Example.com
+  title: Taurin190.com
   termsOfService: https://example.com/terms/
   contact:
     email: contact@example.com
     url: http://example.com/contact
   license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
   x-logo:
     url: https://redocly.github.io/openapi-template/logo.png
   description: |
@@ -64,7 +64,7 @@ servers:
         description: Your tenant id
   - url: https://example.com/api/v1
 paths:
-  /users/{username}:
+  /api/users:
     parameters:
       - name: pretty_print
         in: query
@@ -74,13 +74,60 @@ paths:
     get:
       tags:
         - User
-      summary: Get user by user name
+      summary: Get all users with pager
+      description: |
+        Get all active users with limited number and pages.
+        You can select limit from 10, 50, 100.
+      operationId: getUserByName
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be fetched
+          required: true
+          schema:
+            type: string
+        - name: with_email
+          in: query
+          description: Filter users without email
+          schema:
+            type: boolean
+      security:
+        - main_auth:
+            - read:users
+        - api_key: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                username: user1
+                email: user@example.com
+        '403':
+          description: Forbidden
+          $ref: '#/components/responses/Problem'
+        '404':
+          description: User not found
+          $ref: '#/components/responses/Problem'
+  /api/users/{username}:
+    parameters:
+      - name: pretty_print
+        in: query
+        description: Pretty print response
+        schema:
+          type: boolean
+    get:
+      tags:
+        - User
+      summary: Get user detail by user id
       description: |
         Some description of the operation.
         You can use `Markdown` here.
       operationId: getUserByName
       parameters:
-        - name: username
+        - name: user id
           in: path
           description: The name that needs to be fetched
           required: true
@@ -116,6 +163,43 @@ paths:
         - User
       summary: Updated user
       description: This can only be done by the logged in user.
+      operationId: updateUser
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be updated
+          required: true
+          schema:
+            type: string
+      security:
+        - main_auth:
+            - write:users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Updated user object
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Invalid user supplied
+          $ref: '#/components/responses/Problem'
+        '404':
+          description: User not found
+          $ref: '#/components/responses/Problem'
+    delete:
+      tags:
+        - User
+      summary: Delete user
+      description: |
+        Delete unnecessary users.
+        User who has permisssion can delete users.
       operationId: updateUser
       parameters:
         - name: username
