@@ -80,8 +80,8 @@ type User struct {
 // User Unique ID
 type UserID string
 
-// GetUserByNameParams defines parameters for GetUserByName.
-type GetUserByNameParams struct {
+// GetUsersParams defines parameters for GetUsers.
+type GetUsersParams struct {
 	// Pretty print response
 	PrettyPrint *bool `json:"pretty_print,omitempty"`
 
@@ -92,11 +92,11 @@ type GetUserByNameParams struct {
 	Page *int `json:"page,omitempty"`
 }
 
-// UpdateUserJSONBody defines parameters for UpdateUser.
-type UpdateUserJSONBody User
+// DeleteUserJSONBody defines parameters for DeleteUser.
+type DeleteUserJSONBody User
 
-// UpdateUserParams defines parameters for UpdateUser.
-type UpdateUserParams struct {
+// DeleteUserParams defines parameters for DeleteUser.
+type DeleteUserParams struct {
 	// Pretty print response
 	PrettyPrint *bool `json:"pretty_print,omitempty"`
 }
@@ -119,8 +119,8 @@ type UpdateUserParams struct {
 	PrettyPrint *bool `json:"pretty_print,omitempty"`
 }
 
-// UpdateUserJSONRequestBody defines body for UpdateUser for application/json ContentType.
-type UpdateUserJSONRequestBody UpdateUserJSONBody
+// DeleteUserJSONRequestBody defines body for DeleteUser for application/json ContentType.
+type DeleteUserJSONRequestBody DeleteUserJSONBody
 
 // UpdateUserJSONRequestBody defines body for UpdateUser for application/json ContentType.
 type UpdateUserJSONRequestBody UpdateUserJSONBody
@@ -326,13 +326,13 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 
 // The interface specification for the client above.
 type ClientInterface interface {
-	// GetUserByName request
-	GetUserByName(ctx context.Context, params *GetUserByNameParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetUsers request
+	GetUsers(ctx context.Context, params *GetUsersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// UpdateUser request with any body
-	UpdateUserWithBody(ctx context.Context, userId string, params *UpdateUserParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// DeleteUser request with any body
+	DeleteUserWithBody(ctx context.Context, userId string, params *DeleteUserParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	UpdateUser(ctx context.Context, userId string, params *UpdateUserParams, body UpdateUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DeleteUser(ctx context.Context, userId string, params *DeleteUserParams, body DeleteUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetUserByName request
 	GetUserByName(ctx context.Context, userId string, params *GetUserByNameParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -343,8 +343,8 @@ type ClientInterface interface {
 	UpdateUser(ctx context.Context, userId string, params *UpdateUserParams, body UpdateUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
-func (c *Client) GetUserByName(ctx context.Context, params *GetUserByNameParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetUserByNameRequest(c.Server, params)
+func (c *Client) GetUsers(ctx context.Context, params *GetUsersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetUsersRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -355,8 +355,8 @@ func (c *Client) GetUserByName(ctx context.Context, params *GetUserByNameParams,
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateUserWithBody(ctx context.Context, userId string, params *UpdateUserParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateUserRequestWithBody(c.Server, userId, params, contentType, body)
+func (c *Client) DeleteUserWithBody(ctx context.Context, userId string, params *DeleteUserParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteUserRequestWithBody(c.Server, userId, params, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -367,8 +367,8 @@ func (c *Client) UpdateUserWithBody(ctx context.Context, userId string, params *
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateUser(ctx context.Context, userId string, params *UpdateUserParams, body UpdateUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateUserRequest(c.Server, userId, params, body)
+func (c *Client) DeleteUser(ctx context.Context, userId string, params *DeleteUserParams, body DeleteUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteUserRequest(c.Server, userId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -415,8 +415,8 @@ func (c *Client) UpdateUser(ctx context.Context, userId string, params *UpdateUs
 	return c.Client.Do(req)
 }
 
-// NewGetUserByNameRequest generates requests for GetUserByName
-func NewGetUserByNameRequest(server string, params *GetUserByNameParams) (*http.Request, error) {
+// NewGetUsersRequest generates requests for GetUsers
+func NewGetUsersRequest(server string, params *GetUsersParams) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -494,19 +494,19 @@ func NewGetUserByNameRequest(server string, params *GetUserByNameParams) (*http.
 	return req, nil
 }
 
-// NewUpdateUserRequest calls the generic UpdateUser builder with application/json body
-func NewUpdateUserRequest(server string, userId string, params *UpdateUserParams, body UpdateUserJSONRequestBody) (*http.Request, error) {
+// NewDeleteUserRequest calls the generic DeleteUser builder with application/json body
+func NewDeleteUserRequest(server string, userId string, params *DeleteUserParams, body DeleteUserJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewUpdateUserRequestWithBody(server, userId, params, "application/json", bodyReader)
+	return NewDeleteUserRequestWithBody(server, userId, params, "application/json", bodyReader)
 }
 
-// NewUpdateUserRequestWithBody generates requests for UpdateUser with any type of body
-func NewUpdateUserRequestWithBody(server string, userId string, params *UpdateUserParams, contentType string, body io.Reader) (*http.Request, error) {
+// NewDeleteUserRequestWithBody generates requests for DeleteUser with any type of body
+func NewDeleteUserRequestWithBody(server string, userId string, params *DeleteUserParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -741,13 +741,13 @@ func WithBaseURL(baseURL string) ClientOption {
 
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
-	// GetUserByName request
-	GetUserByNameWithResponse(ctx context.Context, params *GetUserByNameParams, reqEditors ...RequestEditorFn) (*GetUserByNameResponse, error)
+	// GetUsers request
+	GetUsersWithResponse(ctx context.Context, params *GetUsersParams, reqEditors ...RequestEditorFn) (*GetUsersResponse, error)
 
-	// UpdateUser request with any body
-	UpdateUserWithBodyWithResponse(ctx context.Context, userId string, params *UpdateUserParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateUserResponse, error)
+	// DeleteUser request with any body
+	DeleteUserWithBodyWithResponse(ctx context.Context, userId string, params *DeleteUserParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteUserResponse, error)
 
-	UpdateUserWithResponse(ctx context.Context, userId string, params *UpdateUserParams, body UpdateUserJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateUserResponse, error)
+	DeleteUserWithResponse(ctx context.Context, userId string, params *DeleteUserParams, body DeleteUserJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteUserResponse, error)
 
 	// GetUserByName request
 	GetUserByNameWithResponse(ctx context.Context, userId string, params *GetUserByNameParams, reqEditors ...RequestEditorFn) (*GetUserByNameResponse, error)
@@ -758,6 +758,49 @@ type ClientWithResponsesInterface interface {
 	UpdateUserWithResponse(ctx context.Context, userId string, params *UpdateUserParams, body UpdateUserJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateUserResponse, error)
 }
 
+type GetUsersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *User
+}
+
+// Status returns HTTPResponse.Status
+func (r GetUsersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetUsersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteUserResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteUserResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteUserResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetUserByNameResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -801,73 +844,30 @@ func (r UpdateUserResponse) StatusCode() int {
 	return 0
 }
 
-type GetUserByNameResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *User
-}
-
-// Status returns HTTPResponse.Status
-func (r GetUserByNameResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r GetUserByNameResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type UpdateUserResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-}
-
-// Status returns HTTPResponse.Status
-func (r UpdateUserResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r UpdateUserResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-// GetUserByNameWithResponse request returning *GetUserByNameResponse
-func (c *ClientWithResponses) GetUserByNameWithResponse(ctx context.Context, params *GetUserByNameParams, reqEditors ...RequestEditorFn) (*GetUserByNameResponse, error) {
-	rsp, err := c.GetUserByName(ctx, params, reqEditors...)
+// GetUsersWithResponse request returning *GetUsersResponse
+func (c *ClientWithResponses) GetUsersWithResponse(ctx context.Context, params *GetUsersParams, reqEditors ...RequestEditorFn) (*GetUsersResponse, error) {
+	rsp, err := c.GetUsers(ctx, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetUserByNameResponse(rsp)
+	return ParseGetUsersResponse(rsp)
 }
 
-// UpdateUserWithBodyWithResponse request with arbitrary body returning *UpdateUserResponse
-func (c *ClientWithResponses) UpdateUserWithBodyWithResponse(ctx context.Context, userId string, params *UpdateUserParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateUserResponse, error) {
-	rsp, err := c.UpdateUserWithBody(ctx, userId, params, contentType, body, reqEditors...)
+// DeleteUserWithBodyWithResponse request with arbitrary body returning *DeleteUserResponse
+func (c *ClientWithResponses) DeleteUserWithBodyWithResponse(ctx context.Context, userId string, params *DeleteUserParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteUserResponse, error) {
+	rsp, err := c.DeleteUserWithBody(ctx, userId, params, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseUpdateUserResponse(rsp)
+	return ParseDeleteUserResponse(rsp)
 }
 
-func (c *ClientWithResponses) UpdateUserWithResponse(ctx context.Context, userId string, params *UpdateUserParams, body UpdateUserJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateUserResponse, error) {
-	rsp, err := c.UpdateUser(ctx, userId, params, body, reqEditors...)
+func (c *ClientWithResponses) DeleteUserWithResponse(ctx context.Context, userId string, params *DeleteUserParams, body DeleteUserJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteUserResponse, error) {
+	rsp, err := c.DeleteUser(ctx, userId, params, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseUpdateUserResponse(rsp)
+	return ParseDeleteUserResponse(rsp)
 }
 
 // GetUserByNameWithResponse request returning *GetUserByNameResponse
@@ -896,15 +896,15 @@ func (c *ClientWithResponses) UpdateUserWithResponse(ctx context.Context, userId
 	return ParseUpdateUserResponse(rsp)
 }
 
-// ParseGetUserByNameResponse parses an HTTP response from a GetUserByNameWithResponse call
-func ParseGetUserByNameResponse(rsp *http.Response) (*GetUserByNameResponse, error) {
+// ParseGetUsersResponse parses an HTTP response from a GetUsersWithResponse call
+func ParseGetUsersResponse(rsp *http.Response) (*GetUsersResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer rsp.Body.Close()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetUserByNameResponse{
+	response := &GetUsersResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -922,15 +922,15 @@ func ParseGetUserByNameResponse(rsp *http.Response) (*GetUserByNameResponse, err
 	return response, nil
 }
 
-// ParseUpdateUserResponse parses an HTTP response from a UpdateUserWithResponse call
-func ParseUpdateUserResponse(rsp *http.Response) (*UpdateUserResponse, error) {
+// ParseDeleteUserResponse parses an HTTP response from a DeleteUserWithResponse call
+func ParseDeleteUserResponse(rsp *http.Response) (*DeleteUserResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer rsp.Body.Close()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &UpdateUserResponse{
+	response := &DeleteUserResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -984,10 +984,10 @@ func ParseUpdateUserResponse(rsp *http.Response) (*UpdateUserResponse, error) {
 type ServerInterface interface {
 	// Get all users with pager
 	// (GET /api/users)
-	GetUserByName(ctx echo.Context, params GetUserByNameParams) error
+	GetUsers(ctx echo.Context, params GetUsersParams) error
 	// Delete user
 	// (DELETE /api/users/{user_id})
-	UpdateUser(ctx echo.Context, userId string, params UpdateUserParams) error
+	DeleteUser(ctx echo.Context, userId string, params DeleteUserParams) error
 	// Get user detail by user id
 	// (GET /api/users/{user_id})
 	GetUserByName(ctx echo.Context, userId string, params GetUserByNameParams) error
@@ -1001,8 +1001,8 @@ type ServerInterfaceWrapper struct {
 	Handler ServerInterface
 }
 
-// GetUserByName converts echo context to params.
-func (w *ServerInterfaceWrapper) GetUserByName(ctx echo.Context) error {
+// GetUsers converts echo context to params.
+func (w *ServerInterfaceWrapper) GetUsers(ctx echo.Context) error {
 	var err error
 
 	ctx.Set(Main_authScopes, []string{"read:users"})
@@ -1010,7 +1010,7 @@ func (w *ServerInterfaceWrapper) GetUserByName(ctx echo.Context) error {
 	ctx.Set(Api_keyScopes, []string{""})
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params GetUserByNameParams
+	var params GetUsersParams
 	// ------------- Optional query parameter "pretty_print" -------------
 
 	err = runtime.BindQueryParameter("form", true, false, "pretty_print", ctx.QueryParams(), &params.PrettyPrint)
@@ -1033,12 +1033,12 @@ func (w *ServerInterfaceWrapper) GetUserByName(ctx echo.Context) error {
 	}
 
 	// Invoke the callback with all the unmarshalled arguments
-	err = w.Handler.GetUserByName(ctx, params)
+	err = w.Handler.GetUsers(ctx, params)
 	return err
 }
 
-// UpdateUser converts echo context to params.
-func (w *ServerInterfaceWrapper) UpdateUser(ctx echo.Context) error {
+// DeleteUser converts echo context to params.
+func (w *ServerInterfaceWrapper) DeleteUser(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "user_id" -------------
 	var userId string
@@ -1051,7 +1051,7 @@ func (w *ServerInterfaceWrapper) UpdateUser(ctx echo.Context) error {
 	ctx.Set(Main_authScopes, []string{"write:users"})
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params UpdateUserParams
+	var params DeleteUserParams
 	// ------------- Optional query parameter "pretty_print" -------------
 
 	err = runtime.BindQueryParameter("form", true, false, "pretty_print", ctx.QueryParams(), &params.PrettyPrint)
@@ -1060,7 +1060,7 @@ func (w *ServerInterfaceWrapper) UpdateUser(ctx echo.Context) error {
 	}
 
 	// Invoke the callback with all the unmarshalled arguments
-	err = w.Handler.UpdateUser(ctx, userId, params)
+	err = w.Handler.DeleteUser(ctx, userId, params)
 	return err
 }
 
@@ -1155,8 +1155,8 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 		Handler: si,
 	}
 
-	router.GET(baseURL+"/api/users", wrapper.GetUserByName)
-	router.DELETE(baseURL+"/api/users/:user_id", wrapper.UpdateUser)
+	router.GET(baseURL+"/api/users", wrapper.GetUsers)
+	router.DELETE(baseURL+"/api/users/:user_id", wrapper.DeleteUser)
 	router.GET(baseURL+"/api/users/:user_id", wrapper.GetUserByName)
 	router.PUT(baseURL+"/api/users/:user_id", wrapper.UpdateUser)
 
@@ -1165,45 +1165,45 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/+xZX3PbNhL/Khj0Hi45SpTt9Nro6ZK6vbpNYk9sz03H8qQrYkkiAQEGACXrMvruNwuQ",
-	"EiXRdtNr5u6hniSWgOXu4rf/fmA+8cxUtdGovePTT9yiq412GL5cWDNXWNHHzGiP2tNHqGslM/DS6LSO",
-	"En9774ymPZeVWAF9+ovFnE/5V+lWfxp3XdrpXa/XCRfoMitrUsenfLuVtMqCJ99XIBV92JW+dmgZ0h4D",
-	"ISw6xxOOd1DVCvmUvzelHrtK+vIf7eI4MxVPeG5sBZ5PuUfnecL9qiZ5563UBV8n/ZODEJLMgbqwpkbr",
-	"JYHjbYP7vl+VyNoH2Sl6kMqxny7P37Dz+XvMPLu5efvDd998O/nm9q+l97Wbpqk3RrmxRJ+PjS3S0lcq",
-	"tXlGQk9uxzzhldR9s0cJr3tfCQ8/iMwLVjYV6JFFEDBXyPCuVqBD1JirMZO5zJg3zJfSMZNljbWoM2Qm",
-	"Z75E1gZ2PASO1M6DznDI6vXbM2Yxx6jMl+CZFKi9zCW6oHlj/H6jjJ15VsGKGRt+aePZSqISLG+sL9Ey",
-	"qWMI6TQyZwI3NsWgy86Db9yhwxSyH6+uLlgUYJkRGGCHO1k1FZ9+/fx5CEL89mwy2SiX2mOBlrR76dUg",
-	"Gq401if7oXBNVYFd7Z2akd4xnfzyx/PrV6fszfkVy0rQBbLcmqqPlzf3o5cwvMuw9iw3ltWNrY1DRzLK",
-	"ZKDkvwNogyDFhcdiGrL45Pm3f380i0noye1gEhyc2ZWmUYLWF1LgPmLCZE2F2seA08EOlfyrRB2zucJq",
-	"TjniQuLUFh1qnzDpHVuAapB2wLmmQkFIzpHNOMxN46dzBfrDjI/7LaKx8hCsDVrchNom+N4ahWenhwDS",
-	"OrvW8mOD7Ox0p0HdtT+jgX+6nx1fGimGIkd9kAzv9obMIngUL/yhT9/FLSbAo5cV7nh1PDk+GU2OR5Oj",
-	"q8lkGv7ETvQKdeHL0IUOXMCuQz/U+GMbXyc8l9b5N1DhPT097DMNe579ZEr9uCsKHtRN24eqL2lMPK7b",
-	"UpDFY+dsU2Gd8MahfcAX19AwRcFIbvC433y769SzAafo4XfyUa/IInk1lLzt3rCXXzJ5qTlj1ljpV5fk",
-	"Z0xdqOW7D7iij5LcKBEEWp7wgNF0s79RB7X8GVd0kjk4mb2DhsBqCQkJhOWtPLUukq5A6o1wrswymJcV",
-	"URwZ6U7jS2PbvnltVfvwNE17nCKFWqaGRFMhQZmCE30xNbakCsSUguT4NHwJ4XZhivGEL630uNmvjJB5",
-	"GH0WK7PAKBu5Uhc2MnQcl4KOlqBBFjxuS7Fb2uM+zX1H6DSsD3mNdKFnavb0afvE06fsxcUZtU+BldHO",
-	"W/DIcgTf2DhuqEOf16hJrJv5cfbM9Ex/xc60t0Y0GS3RSrBCwgJzqWUc7YSRRy1ip47NGlhhjKCJbb3U",
-	"BauN1GHazXT0e06rK9PYoE5qRupvWl/SyyUUBdpZyyC2U6yQvmzmAYrzF2dpKz+67PuezpWZpxU4jzZd",
-	"oHXSaJeejCfj43ElnoSjnXkGyu0A4/aRmemb2J1HpkYNtRxZrM2gL29RmEyt0gH5J4wm70yDFuGMBPlN",
-	"kH9QU/j9ZG+ooi6kxjF7iSujRdRFNE+AFds4rrSHu4QtQ1YyYDkuI7oL1IIigHcedUDlcRd2wBQmc6ml",
-	"5VHUNdqq2kBLedP5shOXmEDICgOKIL7qJd+OIKVUSNpcajpAd8RkphXoooECR1Bo47zMQu7ZHCLhevv9",
-	"5RUllGPLUmYlWQRFDYPNjS8jY6EaEYxab+OpwMmSdJlZoA07jRZog8lQHhnUMJdK0sCe6bZmHNqFzJAt",
-	"pS9N4xlkGbqgypnGZkiGiaYmuwFMWGBF1jRFyTT6pbEfmLeQ5+EgVIGh+CJPikRBrahkCAnBFhI6xBIG",
-	"LDOaCJJlGcT66blOfwM0kPngZvCbupXfdZ8BC9QZFIPKNNozk880NVfcJp4yhczG7FJWUoGlcy5L8GRy",
-	"A79jJSyIBWoM5E+ZJdqRwgUqOklhoaqkLpJNyGPndLHSigadC3BIzTJQitpDD+nxjDiFkhlqF+Z0O2Ne",
-	"n12xV+1qv21SSlMVxnAExts+7NLXZ1eBSaOt3Hl+GQ30nuv32yCU8s31gV9BY6U+ej5pO3XbX/iUH40n",
-	"Y+JgdyNlitDud92xsazGbaVJk3ZtwmNVK/CY0oPjup247S6f8pPxUdBcgy/DrAqTrJ1Fn3iBA+Txn0gd",
-	"TjHIvOzmU4y3kpUkWqmbwMApUWoo0I1n+hfThFxyqOguHCTjveZokrCvJwk7mkxiKCg1Q24Q0SJrREJe",
-	"rt5EelSDhQp9cPBm37VXQW1rPjrmDYPsYyMtPRzIxMcG7WrLJYIrPOm9uxCYQ6M8nx4NXPfWyb7RCyiw",
-	"tXmPCQLhHgsDBm6T3dcwx5PJA69gulcvG2K2JQAEwP7073hm3D3i6+Q3vrQJd4yBNzaXTWhQpOhZdHRI",
-	"y+ZA25c/JH/yGfI9phgi36NuN32KdUsR2hDIm1vCs71y95K3l7UUHYqch4JyKt6mbtePpNqFRe9XrLbE",
-	"Pjp374t/kH0XZHfyoI393BiFoCn266RXgumnltqvY9Io9AM3idOwzhqtkSIBdhVPN57pQN+XpWElOFaj",
-	"raRz1FNCKYr2uVb2oPKua7oeBjQewYLGLR013vU1onAtWWuCDtHhQm1mC0t3b6F8DxUquhdrBwhtrgu3",
-	"URidf2nE6jfUxWdld7Kj4q5Sn63hoD4iipHys/bCtX/g9XDF7yo6//n31dizP6rG+veUvao63abSUCEN",
-	"jpFLUyHrLXWXhk0S9qYGsc1fX4P9IMxS/8pKtPhfz4r7kzZHn5V/ZNIejIwfpPKbCdUxvdi2hzsIybzr",
-	"BB7qH194doTXDF9kdJz8r9L6s0ZHqOL40p3NY59l8bXG/8PwSHjd+KG33NKFMjJarSjBA5Oer0K5KVMU",
-	"SIQ+HGb85xT4cwr83inQP+RhSUS1dtElz+4V5pNHDdqvA/lZHNH1B6yEuYpYxN0d6syXyyXfx/kX01gW",
-	"haku16H37lraf223OOJ0jNbbA7y7YnAs/B9BS5e26Rsjfrv+TwAAAP//y57fnEodAAA=",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

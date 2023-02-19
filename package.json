@@ -8,6 +8,10 @@
   "scripts": {
     "start": "redocly preview-docs",
     "build": "redocly bundle -o dist",
-    "test": "redocly lint"
+    "test": "redocly lint",
+    "openapi-generate": "rm -f client/*.ts && TS_POST_PROCESS_FILE='npx prettier --write' openapi-generator-cli generate --skip-validate-spec -i dist.yaml -g typescript-axios -o client --additional-properties=supportsES6=true,useSingleRequestParameter=true --enable-post-process-file"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.5.2"
   }
 }

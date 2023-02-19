@@ -11,7 +11,7 @@ get:
   description: |
     Get all active users with limited number and pages.
     You can select limit from 10, 50, 100.
-  operationId: getUserByName
+  operationId: getUsers
   parameters:
     - name: limit
       in: query

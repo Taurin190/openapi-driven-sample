@@ -59,3 +59,9 @@ Goコード出力
 ```
 $ oapi-codegen dist.yaml > openapi.gen.go
 ```
+
+## openapi-generate
+フロントのTSコードを出力
+```
+$ npm run openapi-generate
+```

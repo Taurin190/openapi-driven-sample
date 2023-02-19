@@ -86,7 +86,7 @@ delete:
   description: |
     Delete unnecessary users.
     User who has permisssion can delete users.
-  operationId: updateUser
+  operationId: deleteUser
   parameters:
     - name: user_id
       in: path
