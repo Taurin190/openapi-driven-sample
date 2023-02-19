@@ -50,12 +50,8 @@ info:
     interfaces have done for lower-level programming, OpenAPI removes the
     guesswork in calling the service.
 tags:
-  - name: Echo
-    description: Example echo operations.
   - name: User
     description: Operations about users.
-  - name: Tag
-    description: This is a tag description.
 servers:
   - url: https://{tenant}/api/v1
     variables:
@@ -80,17 +76,18 @@ paths:
         You can select limit from 10, 50, 100.
       operationId: getUserByName
       parameters:
-        - name: username
-          in: path
-          description: The name that needs to be fetched
-          required: true
-          schema:
-            type: string
-        - name: with_email
+        - name: limit
           in: query
-          description: Filter users without email
+          description: Limit number users to acquire
           schema:
-            type: boolean
+            type: integer
+            default: 10
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            default: 1
       security:
         - main_auth:
             - read:users
@@ -105,13 +102,13 @@ paths:
               example:
                 username: user1
                 email: user@example.com
+        '400':
+          description: Bad Request
+          $ref: '#/components/responses/Problem'
         '403':
           description: Forbidden
           $ref: '#/components/responses/Problem'
-        '404':
-          description: User not found
-          $ref: '#/components/responses/Problem'
-  /api/users/{username}:
+  /api/users/{user_id}:
     parameters:
       - name: pretty_print
         in: query
@@ -127,7 +124,7 @@ paths:
         You can use `Markdown` here.
       operationId: getUserByName
       parameters:
-        - name: user id
+        - name: user_id
           in: path
           description: The name that needs to be fetched
           required: true
@@ -150,7 +147,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
               example:
-                username: user1
+                user_id: user1
                 email: user@example.com
         '403':
           description: Forbidden
@@ -165,7 +162,7 @@ paths:
       description: This can only be done by the logged in user.
       operationId: updateUser
       parameters:
-        - name: username
+        - name: user_id
           in: path
           description: The name that needs to be updated
           required: true
@@ -202,7 +199,7 @@ paths:
         User who has permisssion can delete users.
       operationId: updateUser
       parameters:
-        - name: username
+        - name: user_id
           in: path
           description: The name that needs to be updated
           required: true
@@ -230,157 +227,6 @@ paths:
         '404':
           description: User not found
           $ref: '#/components/responses/Problem'
-  /echo:
-    post:
-      tags:
-        - Echo
-      summary: Echo test
-      description: Receive the exact message you've sent
-      operationId: echo
-      security:
-        - api_key: []
-        - basic_auth: []
-      responses:
-        '200':
-          description: OK
-          headers:
-            X-Rate-Limit:
-              description: calls per hour allowed by the user
-              schema:
-                type: integer
-                format: int32
-            X-Expires-After:
-              $ref: '#/components/headers/ExpiresAfter'
-          content:
-            application/json:
-              schema:
-                type: string
-              examples:
-                response:
-                  value: Hello world!
-            application/xml:
-              schema:
-                type: string
-            text/csv:
-              schema:
-                type: string
-        '400':
-          description: Unauthorized
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: string
-              example: Hello world!
-          application/xml:
-            schema:
-              type: string
-              example: Hello world!
-        description: Echo payload
-        required: true
-      x-codeSamples:
-        - lang: C#
-          source: |
-            API.v1.Echo echo = new API.v1.Echo();
-            echo.message = "Hello World!");
-            EchoResponse response = echo.post();
-            if (response.statusCode == HttpStatusCode.Created)
-            {
-              // Success
-            }
-            else
-            {
-              // Something wrong -- check response for errors
-              Console.WriteLine(response.getRawResponse());
-            }
-        - lang: PHP
-          source: |
-            $form = new \API\Entities\Echo();
-            $form->setMessage("Hello World!");
-            try {
-                $pet = $client->echo()->post($form);
-            } catch (UnprocessableEntityException $e) {
-                var_dump($e->getErrors());
-            }
-  /pathItem:
-    post:
-      tags:
-        - Tag
-      summary: Operation summary
-      description: |
-        Operation description **Markdown**.
-      operationId: operationId
-      security:
-        - api_key: []
-        - basic_auth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Schema'
-        description: requestBody description
-        required: true
-      responses:
-        '200':
-          description: OK
-          headers:
-            X-Rate-Limit:
-              description: Calls per hour allowed by the user.
-              schema:
-                type: integer
-                format: int32
-            X-Expires-After:
-              $ref: '#/components/headers/ExpiresAfter'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Schema'
-        '400':
-          $ref: '#/components/responses/Problem'
-  /pathItemWithExamples:
-    post:
-      tags:
-        - Tag
-      summary: Operation summary with examples
-      description: |
-        Operation description **markdown**.
-      operationId: postPathItemWithExamples
-      security:
-        - api_key: []
-        - basic_auth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Schema'
-            examples:
-              mapName:
-                summary: My first example
-                description: My first example's description.
-                value:
-                  stringProperty: tada
-              mapNameDoesNotShowInDocsUnlessSummaryIsNotProvided:
-                value:
-                  stringProperty: checkmark
-        description: requestBody description
-        required: true
-      responses:
-        '200':
-          description: OK
-          headers:
-            X-Rate-Limit:
-              description: calls per hour allowed by the user
-              schema:
-                type: integer
-                format: int32
-            X-Expires-After:
-              $ref: '#/components/headers/ExpiresAfter'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Schema'
-        '400':
-          $ref: '#/components/responses/Problem'
 components:
   securitySchemes:
     main_auth:
@@ -399,15 +245,27 @@ components:
       type: http
       scheme: basic
   schemas:
+    UserID:
+      description: User Unique ID
+      type: string
+      format: uuid
+      example: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
     Email:
       description: User email address
       type: string
       format: test
       example: john.smith@example.com
+    RoleID:
+      description: Role Unique ID
+      type: string
+      format: uuid
+      example: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
     User:
       type: object
       properties:
-        username:
+        user_id:
+          $ref: '#/components/schemas/UserID'
+        userName:
           description: User supplied username
           type: string
           minLength: 4
@@ -424,6 +282,13 @@ components:
           example: Smith
         email:
           $ref: '#/components/schemas/Email'
+        createdAt:
+          description: Created datetime
+          type: string
+          minLength: 1
+          example: '2023-02-01T00:00:00'
+        roleId:
+          $ref: '#/components/schemas/RoleID'
     Problem:
       type: object
       additionalProperties: true
@@ -448,161 +313,6 @@ components:
         instance:
           type: string
           description: A URI reference that identifies the specific occurrence of the problem.  It may or may not yield further information if dereferenced.
-    Schema:
-      type: object
-      title: Scalars
-      properties:
-        stringProperty:
-          description: Property name's description (type is string)
-          type: string
-          examples:
-            - example
-            - sample
-        readOnlyStringProperty:
-          description: Notice this only appears in the response.
-          type: string
-          readOnly: true
-          examples:
-            - example
-        writeOnlyStringProperty:
-          description: Notice this only appears in the request.
-          type: string
-          writeOnly: true
-          examples:
-            - example
-        minLengthString:
-          description: Property name's description (type is string)
-          type: string
-          minLength: 4
-          examples:
-            - example
-        maxLengthString:
-          description: Property name's description (type is string)
-          type: string
-          maxLength: 140
-          examples:
-            - example
-        minAndMaxLengthString:
-          description: Property name's description (type is string)
-          type: string
-          minLength: 4
-          maxLength: 140
-          examples:
-            - example
-        nullableOrStringProperty:
-          description: Property name's description (type is string or null)
-          type:
-            - string
-            - 'null'
-          examples:
-            - example
-        stringEnumValues:
-          description: Property name's description (type is string)
-          type: string
-          enum:
-            - sample
-            - example
-            - specimen
-            - case
-            - instance
-            - illustration
-        stringDateTime:
-          description: Property name's description (type is string, format is date-time)
-          type: string
-          format: date-time
-        stringDate:
-          description: Property name's description (type is string, format is date-time)
-          type: string
-          format: date
-        stringEmail:
-          description: Property name's description (type is string, format is email)
-          type: string
-          format: email
-        stringIpAddressV4:
-          description: Property name's description (type is string, format is ipv4 address)
-          type: string
-          format: ipv4
-        stringIpAddressV6:
-          description: Property name's description (type is string, format is ipv6 address)
-          type: string
-          format: ipv6
-        stringPassword:
-          description: Property name's description (type is string, format is password)
-          type: string
-          format: password
-        stringHostname:
-          description: Property name's description (type is string, format is hostname)
-          type: string
-          format: hostname
-        stringUri:
-          description: Property name's description (type is string, format is uri)
-          type: string
-          format: uri
-        stringUuid:
-          description: Property name's description (type is string, format is uuid)
-          type: string
-          format: uuid
-        numberProperty:
-          description: Property name's description (type is number)
-          type: number
-          example: 8
-        numberFloat:
-          description: Property name's description (type is number, format is float)
-          type: number
-          format: float
-        numberDouble:
-          description: Property name's description (type is number, format is double)
-          type: number
-          format: double
-        numberGreaterThanOrEquals:
-          description: Property name's description (type is number)
-          type: number
-          minimum: 5
-        numberGreaterThan:
-          description: Property name's description (type is number)
-          type: number
-          exclusiveMinimum: 5
-        numberLessThan:
-          description: Property name's description (type is number)
-          type: number
-          exclusiveMaximum: 8
-        numberLessThanOrEquals:
-          description: Property name's description (type is number)
-          type: number
-          maximum: 8
-        numberRange:
-          description: Property name's description (type is number)
-          type: number
-          minimum: 5
-          maximum: 8
-        numberRangeExclusiveMaximum:
-          description: Property name's description (type is number)
-          type: number
-          minimum: 5
-          exclusiveMaximum: 8
-        numberRangeExclusiveMinimumAndMaximum:
-          description: Property name's description (type is number)
-          type: number
-          exclusiveMinimum: 5
-          exclusiveMaximum: 8
-        numberMultipleOf:
-          description: Property name's description (type is number)
-          type: number
-          multipleOf: 2
-        integerType:
-          description: Property name's description (type is integer)
-          type: integer
-        integer32bit:
-          description: Property name's description (type is integer, format is int32)
-          type: integer
-          format: int32
-        integer64bit:
-          description: Property name's description (type is integer, format is int64)
-          type: integer
-          format: int64
-        booleanProperty:
-          description: Property name's description (type is boolean)
-          type: boolean
   responses:
     Problem:
       description: Problem
@@ -610,9 +320,3 @@ components:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/Problem'
-  headers:
-    ExpiresAfter:
-      description: date in UTC when token expires
-      schema:
-        type: string
-        format: date-time

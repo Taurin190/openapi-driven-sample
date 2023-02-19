@@ -1,0 +1,4 @@
+description: Role Unique ID
+type: string
+format: uuid
+example: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx

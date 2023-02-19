@@ -13,17 +13,18 @@ get:
     You can select limit from 10, 50, 100.
   operationId: getUserByName
   parameters:
-    - name: username
-      in: path
-      description: The name that needs to be fetched
-      required: true
-      schema:
-        type: string
-    - name: with_email
+    - name: limit
       in: query
-      description: Filter users without email
+      description: Limit number users to acquire
       schema:
-        type: boolean
+        type: integer
+        default: 10
+    - name: page
+      in: query
+      description: Page number
+      schema:
+        type: integer
+        default: 1
   security:
     - main_auth:
         - 'read:users'
@@ -38,9 +39,9 @@ get:
           example:
             username: user1
             email: user@example.com
+    '400':
+      description: Bad Request
+      $ref: ../components/responses/Problem.yaml
     '403':
       description: Forbidden
-      $ref: ../components/responses/Problem.yaml
-    '404':
-      description: User not found
       $ref: ../components/responses/Problem.yaml

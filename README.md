@@ -40,3 +40,22 @@ openapiのスキーマを起点に開発したサンプル。
   - イベント
   - よくある質問
   - サービス
+
+# 使い方
+## Redocly
+[元ドキュメント](https://github.com/Redocly/openapi-starter)を参照。
+
+ローカルで起動し参照。
+```
+npm start 
+```
+出力ファイル作成
+```
+npm run build
+```
+
+## oapi-codegen
+Goコード出力
+```
+$ oapi-codegen dist.yaml > openapi.gen.go
+```

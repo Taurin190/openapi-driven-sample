@@ -1,0 +1,31 @@
+type: object
+properties:
+  users:
+    type: array
+    items:
+      type: object
+      properties:
+        user_id:
+          $ref: ./UserID.yaml
+        userName:
+          description: User supplied first name
+          type: string
+          minLength: 1
+          example: John      
+        firstName:
+          description: User first name
+          type: string
+          minLength: 1
+          example: John
+        lastName:
+          description: User last name
+          type: string
+          minLength: 1
+          example: Smith
+        createdAt:
+          description: Created datetime
+          type: string
+          minLength: 1
+          example: 2023-02-01T00:00:00
+        roleId:
+          $ref: ./RoleID.yaml

@@ -13,7 +13,7 @@ get:
     You can use `Markdown` here.
   operationId: getUserByName
   parameters:
-    - name: user id
+    - name: user_id
       in: path
       description: The name that needs to be fetched
       required: true
@@ -36,7 +36,7 @@ get:
           schema:
             $ref: ../components/schemas/User.yaml
           example:
-            username: user1
+            user_id: user1
             email: user@example.com
     '403':
       description: Forbidden
@@ -51,7 +51,7 @@ put:
   description: This can only be done by the logged in user.
   operationId: updateUser
   parameters:
-    - name: username
+    - name: user_id
       in: path
       description: The name that needs to be updated
       required: true
@@ -88,7 +88,7 @@ delete:
     User who has permisssion can delete users.
   operationId: updateUser
   parameters:
-    - name: username
+    - name: user_id
       in: path
       description: The name that needs to be updated
       required: true
