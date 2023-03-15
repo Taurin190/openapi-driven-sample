@@ -1,4 +1,4 @@
 description: Role Unique ID
 type: string
 format: uuid
-example: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+example: 19f965bc-b468-4859-8495-d3028c6da72c

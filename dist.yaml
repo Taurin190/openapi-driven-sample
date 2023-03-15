@@ -130,6 +130,8 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
+          example: 19f965bc-b468-4859-8495-d3028c6da72c
         - name: with_email
           in: query
           description: Filter users without email
@@ -147,7 +149,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
               example:
-                user_id: user1
+                user_id: 19f965bc-b468-4859-8495-d3028c6da72c
                 email: user@example.com
         '403':
           description: Forbidden
@@ -168,6 +170,8 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
+          example: 19f965bc-b468-4859-8495-d3028c6da72c
       security:
         - main_auth:
             - write:users
@@ -205,6 +209,8 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
+          example: 19f965bc-b468-4859-8495-d3028c6da72c
       security:
         - main_auth:
             - write:users
@@ -249,7 +255,7 @@ components:
       description: User Unique ID
       type: string
       format: uuid
-      example: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+      example: 19f965bc-b468-4859-8495-d3028c6da72c
     Email:
       description: User email address
       type: string
@@ -259,7 +265,7 @@ components:
       description: Role Unique ID
       type: string
       format: uuid
-      example: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+      example: 19f965bc-b468-4859-8495-d3028c6da72c
     User:
       type: object
       properties:
